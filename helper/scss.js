@@ -8,13 +8,16 @@ module.exports = function(gulp, plugins, config, name, locale, file) { // eslint
           maps       = plugins.util.env.maps || false,
           production = plugins.util.env.prod || false,
           postcss    = [],
-          parentPath = require('./parent-theme-dir')(name, config, plugins);
+          // parentPath = require('./parent-theme-dir')(name, config, plugins);
+          parentPath = ['../../../vendor','bower_components/foundation-sites/scss'];
 
     if (theme.postcss) {
       theme.postcss.forEach(el => {
         postcss.push(eval(el));
       });
     }
+
+    // parentPath.push('../../../vendor');
 
     return gulp.src([
       src, '!' + config.projectPath + theme.src + '/node_modules/**/*.scss'
@@ -33,4 +36,5 @@ module.exports = function(gulp, plugins, config, name, locale, file) { // eslint
       }))
       .pipe(plugins.browserSync.stream());
   }
+
 };
