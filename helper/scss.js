@@ -19,7 +19,9 @@ module.exports = function(gulp, plugins, config, name, locale, file) { // eslint
 
 
     return gulp.src([
-      src, '!' + config.projectPath + theme.src + '/node_modules/**/*.scss'
+      src,
+      '!' + config.projectPath + theme.src + '/node_modules/**/*.scss',
+      '!' + config.projectPath + theme.src + '/bower_components/foundation-sites/**/*.scss'
     ], { base: config.projectPath + theme.src + '/styles' })
       .pipe(plugins.plumber({ errorHandler: plugins.notify.onError('Error: <%= error.message %>') }))
       .pipe(plugins.if(maps, plugins.sourcemaps.init()))
