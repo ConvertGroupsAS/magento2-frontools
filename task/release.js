@@ -5,5 +5,5 @@ module.exports = function() { // eslint-disable-line func-names
 
   // Clean pub/static, run source-theme:deploy and then compile styles
   plugins.util.env.prod = true;
-  plugins.runSequence(['clean', 'deploy', 'bower', 'copyjs', 'styles']);
+  plugins.runSequence('clean', 'deploy', 'bower', 'copyjs', 'styles');
 };
