@@ -12,7 +12,13 @@ module.exports = function() {
     theme.locale.forEach(locale => {
       const src       = config.projectPath + theme.dest + '/' + locale,
             dest      = '/Users/cernforlife/www/eplehuset-pimcore/website/static',
-            srcPaths  = plugins.globby.sync([src + '/css', src + '/images', src + '/js']);
+            srcPaths  = plugins.globby.sync([
+                src + '/css',
+                src + '/images',
+                src + '/js',
+                src + '/bower_components/foundation-sites/dist/foundation.min.js',
+                src + '/bower_components/jquery/dist/jquery.min.js']
+            );
 
       srcPaths.forEach(srcPath => {
         const destPath = srcPath.replace(['/css','/images','/js'], '').replace(src, dest);
