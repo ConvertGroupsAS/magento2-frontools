@@ -1,5 +1,5 @@
 'use strict';
-module.exports = function() { // eslint-disable-line func-names
+module.exports = function() {
   // Global variables
   const plugins  = this.opts.plugins,
         config   = this.opts.configs,
@@ -10,12 +10,12 @@ module.exports = function() { // eslint-disable-line func-names
   themes.forEach(name => {
     const theme = config.themes[name];
     theme.locale.forEach(locale => {
-      const src       = config.projectPath + theme.src,
-            dest      = config.projectPath + theme.dest + '/' + locale,
-            srcPaths  = plugins.globby.sync(src + '/bower_components/**/**/**.js', { nodir: true, ignore: '/**/node_modules/**' });
+      const src       = config.projectPath + theme.dest + '/' + locale,
+            dest      = '/Users/cernforlife/www/eplehuset-pimcore/website/static',
+            srcPaths  = plugins.globby.sync([src + '/css', src + '/images', src + '/js']);
 
       srcPaths.forEach(srcPath => {
-        const destPath = srcPath.replace('/web', '').replace(src, dest);
+        const destPath = srcPath.replace(['/css','/images','/js'], '').replace(src, dest);
         try {
           plugins.fs.ensureFileSync(destPath);
           plugins.fs.unlinkSync(destPath);
@@ -26,4 +26,5 @@ module.exports = function() { // eslint-disable-line func-names
       });
     });
   });
+
 };
