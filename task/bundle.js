@@ -16,7 +16,7 @@ module.exports = function() {
                 src + '/css',
                 src + '/images',
                 src + '/js',
-                src + '/bower_components/foundation-sites/dist/foundation.min.js',
+                src + '/bower_components/foundation-sites/dist/js/foundation.min.js',
                 src + '/bower_components/jquery/dist/jquery.min.js']
             );
 
