@@ -1,61 +1,37 @@
 {
-  "backend": {
-    "src"    : "app/design/adminhtml/Magento/backend",
-    "dest"   : "pub/static/adminhtml/Magento/backend",
-    "locale" : ["en_US"],
-    "lang"   : "less",
-    "default": true,
-    "area"   : "adminhtml",
-    "vendor" : "Magento",
-    "name"   : "backend",
-    "files"  : [
-      "css/styles-old",
-      "css/styles"
-    ]
-  },
   "blank": {
-    "src"    : "app/design/frontend/Magento/blank",
-    "dest"   : "pub/static/frontend/Magento/blank",
-    "locale" : ["en_US"],
-    "lang"   : "less",
-    "default": true,
-    "area"   : "frontend",
-    "vendor" : "Magento",
-    "name"   : "blank",
-    "files"  : [
-      "css/styles-m",
-      "css/styles-l",
-      "css/email",
-      "css/email-inline"
+    "src": "vendor/snowdog/theme-blank-sass",
+    "dest": "pub/static/frontend/Snowdog/blank",
+    "locale": ["en_US"],
+    "ignore": [".test"]
+  },
+  "basic-child": {
+    "src": "vendor/snowdog/theme-basic-child",
+    "dest": "pub/static/frontend/Snowdog/basic-child",
+    "locale": ["en_US"],
+    "parent": "blank"
+  },
+  "child-with-locale-overwrites": {
+    "src": "vendor/snowdog/theme-custom",
+    "dest": "pub/static/frontend/Snowdog/child-with-locale-overwrites",
+    "locale": ["en_US", "pl_PL"],
+    "localeOverwrites": true,
+    "parent": "blank"
+  },
+  "all-possible-options": {
+    "src": "vendor/snowdog/theme-all-possible-options",
+    "dest": "pub/static/frontend/Snowdog/all-possible-options",
+    "locale": ["en_US", "pl_PL"],
+    "localeOverwrites": true,
+    "parent": "blank",
+    "stylesDir": "web/css",
+    "postcss": ["plugins.autoprefixer()"],
+    "modules": {
+      "Snowdog_Sample": "vendor/snowdog/module-sample"
+    },
+    "ignore": [
+      "vendor/snowdog/module-sample/{docs,dist}/**",
+      "*.xml"
     ]
-  },
-  "luma": {
-    "src"    : "app/design/frontend/Magento/luma",
-    "dest"   : "pub/static/frontend/Magento/luma",
-    "locale" : ["en_US"],
-    "lang"   : "less",
-    "default": true,
-    "area"   : "frontend",
-    "vendor" : "Magento",
-    "name"   : "luma",
-    "files"  : [
-      "css/styles-m",
-      "css/styles-l"
-    ]
-  },
-  "sass-blank": {
-    "src"    : "vendor/snowdog/theme-blank-sass",
-    "dest"   : "pub/static/frontend/snowdog/blank",
-    "locale" : ["en_US", "pl_PL"],
-    "lang"   : "scss",
-    "postcss": ["plugins.autoprefixer()"]
-  },
-  "sass-custom": {
-    "src"    : "vendor/snowdog/theme-custom",
-    "dest"   : "pub/static/frontend/snowdog/custom",
-    "parent" : "sass-blank",
-    "locale" : ["en_US", "pl_PL"],
-    "lang"   : "scss",
-    "postcss": ["plugins.autoprefixer()"]
   }
 }

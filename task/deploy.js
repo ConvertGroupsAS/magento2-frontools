@@ -1,66 +1,49 @@
 'use strict';
 module.exports = function() { // eslint-disable-line func-names
   // Global variables
-  const plugins  = this.opts.plugins,
-        config   = this.opts.configs,
-        themes   = plugins.getThemes(),
-        prod     = plugins.util.env.prod || false,
-        execSync = require('child_process').execSync;
+  const plugins = this.opts.plugins,
+        config  = this.opts.configs,
+        themes  = plugins.getThemes(),
+        prod    = plugins.util.env.prod || false;
 
-  themes.forEach(name => {
-    const theme = config.themes[name];
-    if (theme.default) {
-      // Loop through locales, because you are required to specify a locale
-      theme.locale.forEach(locale => {
-        // if it's default theme, create symlinks to styles files via Magento CLI
-        // porting "@magento-import" to node.js might be time consuming
-        // and it's not so useful for front-end developers
-        // execSync to keep process synchronous and wait till CLI do the job
-        execSync(
-          config.projectPath + 'bin/magento dev:source-theme:deploy'
-          + ' --type=' + theme.lang
-          + ' --locale=' + locale
-          + ' --area=' + theme.area
-          + ' --theme=' + theme.vendor + '/' + theme.name
-          + ' ' + theme.files.join(' ')
-        );
-      });
-    }
-    else {
-      theme.locale.forEach(locale => {
-        const src       = config.projectPath + theme.src,
-              dest      = config.projectPath + theme.dest + '/' + locale,
-              srcPaths  = plugins.globby.sync(src + '/**/web/**', { nodir: true, ignore: '/**/node_modules/**' });
+  plugins.runSequence('inheritance', 'clean', () => {
+    themes.forEach(name => {
+      const theme = config.themes[name];
+      if (!theme.localeOverwrites) {
+        const src  = config.tempPath + theme.dest.replace('pub/static', ''),
+              dest = config.projectPath + theme.dest;
 
-        if (theme.parent) {
-          const parentTheme     = config.themes[theme.parent],
-                parentSrc       = config.projectPath + parentTheme.src,
-                parentSrcPaths  = plugins.globby.sync(parentSrc + '/**/web/**', { nodir: true, ignore: '/**/node_modules/**' });
+        plugins.globby.sync(
+          src + '/**/web/**',
+          { nodir: true }
+        ).forEach(srcPath => {
+          theme.locale.forEach(locale => {
+            const destPath = dest + '/' + locale + srcPath
+              .replace(src, '')
+              .replace('web/', '');
 
-          parentSrcPaths.forEach(srcPath => {
-            const destPath = srcPath.replace('/web', '').replace(parentSrc, dest);
-            try {
-              plugins.fs.ensureFileSync(destPath);
-              plugins.fs.unlinkSync(destPath);
-            }
-            finally {
-              prod ? plugins.fs.copySync(srcPath, destPath) : plugins.fs.symlinkSync(srcPath, destPath);
-            }
+            prod ? plugins.fs.copySync(srcPath, destPath) : plugins.fs.ensureSymlinkSync(srcPath, destPath);
           });
-        }
-
-        srcPaths.forEach(srcPath => {
-          const destPath = srcPath.replace('/web', '').replace(src, dest);
-          try {
-            plugins.fs.ensureFileSync(destPath);
-            plugins.fs.unlinkSync(destPath);
-          }
-          finally {
-            prod ? plugins.fs.copySync(srcPath, destPath) : plugins.fs.symlinkSync(srcPath, destPath);
-          }
         });
-      });
-    }
+      }
+      else {
+        theme.locale.forEach(locale => {
+          const src  = config.tempPath + theme.dest.replace('pub/static', '') + '/' + locale,
+                dest = config.projectPath + theme.dest;
+
+          plugins.globby.sync(
+            src + '/**/web/**',
+            { nodir: true }
+          ).forEach(srcPath => {
+            const destPath = dest + '/' + locale + srcPath
+              .replace(src, '')
+              .replace('web/', '');
+
+            prod ? plugins.fs.copySync(srcPath, destPath) : plugins.fs.ensureSymlinkSync(srcPath, destPath);
+          });
+        });
+      }
+    });
   });
 
   this.opts.plugins.runSequence('copyjs');
