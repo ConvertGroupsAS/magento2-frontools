@@ -2,9 +2,10 @@
 module.exports = function(gulp, plugins, config, name, file) { // eslint-disable-line func-names
   const theme         = config.themes[name],
         srcBase       = config.projectPath + 'var/view_preprocessed/frontools' + theme.dest.replace('pub/static', ''),
+        foundationPath = config.projectPath + theme.src + '/bower_components/foundation-sites/scss',
         stylesDir     = theme.stylesDir ? theme.stylesDir : 'styles',
         dest          = [],
-        disableMaps   = plugins.util.env.disableMaps || false,
+        disableMaps   = true,
         production    = plugins.util.env.prod || false,
         postcss       = [],
         disableSuffix = theme.disableSuffix || false;
@@ -46,7 +47,9 @@ module.exports = function(gulp, plugins, config, name, file) { // eslint-disable
     )
     .pipe(plugins.if(!disableMaps && !production, plugins.sourcemaps.init()))
     .pipe(
-      plugins.sass()
+      plugins.sass({
+        includePaths: foundationPath
+      })
         .on('error', plugins.sassError.gulpSassError(plugins.util.env.ci || false))
     )
     .pipe(plugins.if(production, plugins.postcss([plugins.cssnano()])))
