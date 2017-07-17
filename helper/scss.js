@@ -8,7 +8,7 @@ module.exports = function(gulp, plugins, config, name, file) { // eslint-disable
         disableMaps   = true,
         production    = plugins.util.env.prod || false,
         postcss       = [],
-        disableSuffix = theme.disableSuffix || false ;
+        disableSuffix = theme.disableSuffix || false;
 
   if (theme.postcss) {
     theme.postcss.forEach(el => {
