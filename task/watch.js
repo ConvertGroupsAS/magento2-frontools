@@ -6,6 +6,8 @@ module.exports = function(resolve) { // eslint-disable-line func-names
         config  = this.opts.configs,
         themes  = plugins.getThemes();
 
+  config.watcher = require('../helper/config-loader')('watcher.json', plugins, config);
+
   plugins.path                 = require('path');
   plugins.helper               = {};
   plugins.helper.babel         = require('../helper/babel');
@@ -33,18 +35,19 @@ module.exports = function(resolve) { // eslint-disable-line func-names
       });
     }
 
+    // Chokidar watcher config
+    const watcherConfig = { // eslint-disable-line one-var
+      ignoreInitial: true,
+      usePolling: config.watcher.usePolling
+    };
+
     // Initialize watchers
-    const tempWatcher = plugins.chokidar.watch(themeTempSrc, { // eslint-disable-line one-var
-            ignoreInitial: true
-          }),
-          srcWatcher = plugins.chokidar.watch(themeSrc, {
-            ignoreInitial: true
-          }),
-          destWatcher = plugins.chokidar.watch(themeDest, {
-            ignoreInitial: true
-          });
+    const tempWatcher = plugins.chokidar.watch(themeTempSrc, watcherConfig), // eslint-disable-line one-var
+          srcWatcher = plugins.chokidar.watch(themeSrc, watcherConfig),
+          destWatcher = plugins.chokidar.watch(themeDest, watcherConfig);
 
     let reinitTimeout = false,
+        reinitPaths = [],
         sassDependecyTree = {};
 
     function generateSassDependencyTree() {
@@ -66,15 +69,18 @@ module.exports = function(resolve) { // eslint-disable-line func-names
     function reinitialize(path) {
       // Reset previously set timeout
       clearTimeout(reinitTimeout);
+      reinitPaths.push(path);
 
       // Timeout to run only once while moving or renaming files
       reinitTimeout = setTimeout(() => {
+        const paths = reinitPaths;
+        reinitPaths = [];
+
         plugins.util.log(
           plugins.util.colors.yellow('Change detected.') + ' ' +
           plugins.util.colors.green('Theme:') + ' ' +
           plugins.util.colors.blue(name) + ' ' +
-          plugins.util.colors.green('File:') + ' ' +
-          plugins.util.colors.blue(plugins.path.relative(config.projectPath, path))
+          plugins.util.colors.green(`${paths.length} file(s) changed`)
         );
 
         plugins.util.log(
@@ -95,10 +101,14 @@ module.exports = function(resolve) { // eslint-disable-line func-names
           tempWatcher.add(themeTempSrc);
 
           // Emit event on added / moved / renamed / deleted file to trigger regualr pipeline
-          plugins.globby.sync(themeTempSrc + '/**/' + plugins.path.basename(path))
-            .forEach(file => {
-              tempWatcher.emit('change', file);
-            });
+          paths.forEach(path => {
+            if (plugins.fs.existsSync(path)) {
+              plugins.globby.sync(themeTempSrc + '/**/' + plugins.path.basename(path))
+                .forEach(file => {
+                  tempWatcher.emit('change', file);
+                });
+            }
+          });
         });
       }, 100);
     }
@@ -128,7 +138,7 @@ module.exports = function(resolve) { // eslint-disable-line func-names
         plugins.util.colors.green('Theme:') + ' ' +
         plugins.util.colors.blue(name) + ' ' +
         plugins.util.colors.green('File:') + ' ' +
-        plugins.util.colors.blue(plugins.path.relative(config.projectPath, path))
+        plugins.util.colors.blue(plugins.path.relative(themeTempSrc, path))
       );
 
       // SASS Lint
@@ -158,9 +168,9 @@ module.exports = function(resolve) { // eslint-disable-line func-names
       }
 
       // Files that require reload after save
-      if (['.html', '.phtml', '.xml', '.csv', '.js'].some(ext => {
-        return plugins.path.extname(path) === ext;
-      })) {
+      if (['.html', '.phtml', '.xml', '.csv', '.js', '.vue'].some(
+        ext => plugins.path.extname(path) === ext
+      )) {
         plugins.browserSync.reload();
       }
     });
