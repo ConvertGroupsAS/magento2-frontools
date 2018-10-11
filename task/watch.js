@@ -26,7 +26,8 @@ module.exports = function(resolve) { // eslint-disable-line func-names
     const theme = config.themes[name],
           themeTempSrc = config.tempPath + theme.dest.replace('pub/static', ''),
           themeDest = config.projectPath + theme.dest,
-          themeSrc = [config.projectPath + theme.src];
+          themeSrc = [config.projectPath + theme.src],
+          disableSassLinting = theme.disableSassLinting || false;
 
     // Add modules source directeoried to theme source paths array
     if (theme.modules) {
@@ -142,7 +143,7 @@ module.exports = function(resolve) { // eslint-disable-line func-names
       );
 
       // SASS Lint
-      if (!plugins.util.env.disableLinting) {
+      if (!plugins.util.env.disableLinting && !disableSassLinting) {
         if (plugins.path.extname(path) === '.scss') {
           plugins.helper.sassLint(gulp, plugins, config, name, path);
         }
@@ -177,7 +178,7 @@ module.exports = function(resolve) { // eslint-disable-line func-names
 
     destWatcher.on('change', path => {
       // CSS Lint
-      if (!plugins.util.env.disableLinting) {
+      if (!plugins.util.env.disableLinting && !disableSassLinting) {
         if (plugins.path.extname(path) === '.css') {
           plugins.helper.cssLint(gulp, plugins, config, name, path);
         }
