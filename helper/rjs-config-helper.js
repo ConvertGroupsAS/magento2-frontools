@@ -32,10 +32,10 @@ function getConfig(url) {
 
             page.evaluate(function () {
                 let res = {
-                    map,
-                    shim,
-                    paths
-                } = window.require.s.contexts._.config;
+                    map: window.require.s.contexts._.config.map,
+                    shim: window.require.s.contexts._.config.shim,
+                    paths: window.require.s.contexts._.config.paths
+                };
 
                 return JSON.stringify(res);
 
