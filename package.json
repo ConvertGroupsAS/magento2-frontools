@@ -17,6 +17,7 @@
     "browser-sync": "~2.18.12",
     "chokidar": "~1.7.0",
     "cssnano": "~3.10.0",
+    "deepmerge": "^4.2.2",
     "eslint-config-idiomatic": "~3.1.0",
     "fs-extra": "~3.0.1",
     "globby": "~6.1.0",
@@ -46,7 +47,9 @@
     "marked": "~0.3.6",
     "marked-terminal": "~2.0.0",
     "merge-stream": "~1.0.1",
+    "phantom": "^6.3.0",
     "postcss-reporter": "~4.0.0",
+    "requirejs": "^2.3.6",
     "run-sequence": "~1.2.2",
     "stylelint": "~7.11.0",
     "stylelint-config-standard": "~16.0.0"
