@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function () {
 
     const gulp = this.gulp,
@@ -8,29 +6,35 @@ module.exports = function () {
         themeName = plugins.util.env.theme,
         locale = plugins.util.env.locale,
         themeConfig = config.themes[themeName],
+        themes = plugins.getThemes(),
         rjsConfigBase = require(config.projectPath + 'dev/tools/frontools/config/build'),
-        modules = require(config.projectPath + config.themes[themeName].src + '/modules'),
         deepmerge = require('deepmerge'),
         requirejs = require('requirejs');
 
-    let rjsConfig = deepmerge(modules, rjsConfigBase),
-        tasks = [];
+    let tasks = [];
 
-    rjsConfig.baseUrl = `${config.projectPath}${themeConfig.dest}/${locale}_tmp`;
-    rjsConfig.dir = `${config.projectPath}${themeConfig.dest}/${locale}`;
+    themes.forEach(name => {
+        const modules = require(config.projectPath + config.themes[name].src + '/modules');
 
-    tasks.push(new Promise((resolve) => {
-        gulp.src(`${config.projectPath}${themeConfig.dest}/${locale}/**/*`)
-            .pipe(gulp.dest(`${config.projectPath}${themeConfig.dest}/${locale}_tmp`)).on('end', () => {
-            requirejs.optimize(rjsConfig, () => {
+        config.themes[name].locale.forEach(locale => {
+            tasks.push(new Promise((resolve) => {
+                let rjsConfig = deepmerge(modules, rjsConfigBase);
+                rjsConfig.baseUrl = `${config.projectPath}${config.themes[name].dest}/${locale}_tmp`;
+                rjsConfig.dir = `${config.projectPath}${config.themes[name].dest}/${locale}`;
 
-                plugins.fs.remove(rjsConfig.baseUrl, err => {
-                    if (err) console.log(err);
-                    resolve(1);
+                gulp.src(`${config.projectPath}${config.themes[name].dest}/${locale}/**/*`)
+                    .pipe(gulp.dest(`${config.projectPath}${config.themes[name].dest}/${locale}_tmp`)).on('end', () => {
+                    requirejs.optimize(rjsConfig, () => {
+
+                        plugins.fs.remove(rjsConfig.baseUrl, err => {
+                            if (err) console.log(err);
+                            resolve(1);
+                        })
+                    })
                 })
-            })
+            }));
         })
-    }));
+    });
 
     return Promise.all(tasks);
 };

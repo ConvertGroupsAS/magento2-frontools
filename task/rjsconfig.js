@@ -1,5 +1,4 @@
-module.exports = function(){
-
+module.exports = function(done){
     const plugins = this.opts.plugins,
         config = this.opts.configs,
         themeName = plugins.util.env.theme,
@@ -15,7 +14,7 @@ module.exports = function(){
 
     tasks.push(getConfig(taskConfig.baseUrl));
 
-    return Promise.all(tasks).then((results) => {
+    Promise.all(tasks).then((results) => {
 
         let allrows = results.filter(res => res.name === "modules").map(res => res.result).join('\n').split('\n'),
             requirejsConfig = JSON.parse(results.find(res => res.name === "config").result),
@@ -40,21 +39,17 @@ module.exports = function(){
 
         let m = Math.max(...Object.keys(grouped).map(k => parseInt(k)));
 
-        let result = {
-            ...requirejsConfig,
-            modules: [
-                {
+        requirejsConfig.modules = [{
                     name: 'bundles/default',
                     create: true,
                     exclude: [ ],
                     include: grouped[m]
-                }
-            ]
-        };
+                }];
 
-        plugins.fs.writeFile(`${config.projectPath}${themeConfig.src}/modules.json`, JSON.stringify(result), err => {
+        plugins.fs.writeFile(`${config.projectPath}${themeConfig.src}/modules.json`, JSON.stringify(requirejsConfig), err => {
             if (err) console.log(err);
             console.log('Rjs config successfully generated');
+            done();
         });
     });
 };
