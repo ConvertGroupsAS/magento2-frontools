@@ -11,7 +11,7 @@ module.exports = ({
     },
     map: {},
     modules: [],
-    "bundlesConfigOutFile": "requirejs-config.js",
+    "bundlesConfigOutFile": "requirejs-config.min.js", //todo minify
     onModuleBundleComplete: function (data) {
         if (this.bundleConfigAppended) {
             return;

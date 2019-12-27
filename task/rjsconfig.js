@@ -42,7 +42,7 @@ module.exports = function(done){
         requirejsConfig.modules = [{
                     name: 'bundles/default',
                     create: true,
-                    exclude: [ ],
+                    exclude: ['text'],
                     include: grouped[m]
                 }];
 
