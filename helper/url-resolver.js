@@ -1,11 +1,11 @@
 const requirejs = require('requirejs');
-    matchAll = require("match-all");
+      matchAll = require('match-all');
 
-function initUrlResolver (rjsConfig) {
+function initUrlResolver(rjsConfig) {
 
-    let minResolver = `${rjsConfig.dir}/requirejs-min-resolver.min.js`, //todo minify
-        contents = this.opts.plugins.fs.readFileSync(minResolver, 'utf8');
-    modulesToExclude = matchAll(contents, /match\(\/(.*?)\/\)/gm).toArray().join('|');
+    let minResolver = `${rjsConfig.dir}/requirejs-min-resolver.min.js`,
+        contents = this.opts.plugins.fs.readFileSync(minResolver, 'utf8'),
+        modulesToExclude = matchAll(contents, /match\(\/(.*?)\/\)/gm).toArray().join('|');
 
     requirejs.define('urlResolverInterceptor', function () {
 
@@ -13,7 +13,7 @@ function initUrlResolver (rjsConfig) {
 
         function getUrl(context, url) {
 
-            if(context.config.baseUrl === rjsConfig.dir && !url.match(modulesToExclude)){
+            if (context.config.baseUrl === rjsConfig.dir && !url.match(modulesToExclude)) {
                 url = url.replace(/(\.min)?\.js$/, '.min.js');
             }
             return url;
@@ -32,7 +32,9 @@ function initUrlResolver (rjsConfig) {
         };
     });
 
-    requirejs(['urlResolverInterceptor'], () => { });
+    requirejs(['urlResolverInterceptor'], () => {
+    });
 
 }
+
 module.exports = {initUrlResolver};

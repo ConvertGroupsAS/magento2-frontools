@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 module.exports = ({
-    "optimize": "none",
+    optimize: 'none',
     preserveLicenseComments: false,
     generateSourceMaps: false,
     deps: [],
@@ -11,7 +11,7 @@ module.exports = ({
     },
     map: {},
     modules: [],
-    "bundlesConfigOutFile": "requirejs-config.min.js", //todo minify
+    bundlesConfigOutFile: 'requirejs-config.js',
     onModuleBundleComplete: function (data) {
         if (this.bundleConfigAppended) {
             return;
