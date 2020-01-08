@@ -1,11 +1,12 @@
-module.exports = function(done){
+module.exports = function (done) {
+
     const plugins = this.opts.plugins,
         config = this.opts.configs,
         themeName = plugins.util.env.theme,
-        locale = plugins.util.env.locale,
         themeConfig = config.themes[themeName],
+        themes = plugins.getThemes(),
         {collect, getConfig} = require('../helper/rjs-config-helper'),
-        taskConfig = require(config.projectPath + 'dev/tools/frontools/config/rjs')[locale];
+        taskConfig = require(config.projectPath + 'dev/tools/frontools/config/rjs');
 
 
     let tasks = taskConfig.pages.map(page => {
@@ -40,11 +41,11 @@ module.exports = function(done){
         let m = Math.max(...Object.keys(grouped).map(k => parseInt(k)));
 
         requirejsConfig.modules = [{
-                    name: 'bundles/default',
-                    create: true,
-                    exclude: ['text'],
-                    include: grouped[m]
-                }];
+            name: 'bundles/default',
+            create: true,
+            exclude: ['text'],
+            include: grouped[m]
+        }];
 
         plugins.fs.writeFile(`${config.projectPath}${themeConfig.src}/modules.json`, JSON.stringify(requirejsConfig), err => {
             if (err) console.log(err);
