@@ -47,7 +47,7 @@ module.exports = function (done) {
             include: grouped[m]
         }];
 
-        plugins.fs.writeFile(`${config.projectPath}${themeConfig.src}/modules.json`, JSON.stringify(requirejsConfig), err => {
+        plugins.fs.writeFile(`${config.projectPath}${themeConfig.src}/bundle.json`, JSON.stringify(requirejsConfig), err => {
             if (err) console.log(err);
             console.log('Rjs config successfully generated');
             done();
