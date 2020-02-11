@@ -15,12 +15,10 @@ module.exports = function (done) {
         filesExt = minify ? '.min.js' : '.js';
 
     let tasks = [];
-/*
 
     if (!plugins.util.env.pipeline) {
         plugins.runSequence('inheritance');
     }
-*/
 
     themes.forEach(name => {
         let bundle = require(`${config.tempPath}${config.themes[name].dest.replace('pub/static', '')}/bundle`);
