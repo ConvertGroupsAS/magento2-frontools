@@ -31,7 +31,7 @@ module.exports = function (done) {
             /*---------------- local require config start -----------------------*/
             let projectReqConf = plugins.fs.readFileSync(`${rjsConfigBase.dir}/requirejs-config${filesExt}`, 'utf8');
             let f = new Function('require', projectReqConf);
-            var origConfig = requirejs.config;
+            let origConfig = requirejs.config;
             requirejs.config = function (c) {
                 c.context = contextName;
                 c.deps = null;
