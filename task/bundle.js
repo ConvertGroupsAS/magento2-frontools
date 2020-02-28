@@ -7,7 +7,7 @@ module.exports = function (done) {
         minify = plugins.util.env.minify,
         themeConfig = config.themes[themeName],
         themes = plugins.getThemes(),
-        rjsConfigBase = require(config.projectPath + 'dev/tools/frontools/config/build'),
+        rjsConfigBase = require('../helper/config-loader')('build.json', plugins, config),
         deepmerge = require('deepmerge'),
         initUrlResolver = require('../helper/url-resolver').initUrlResolver.bind(this),
         requirejs = require('requirejs'),
@@ -19,6 +19,7 @@ module.exports = function (done) {
     if (!plugins.util.env.pipeline) {
         plugins.runSequence('inheritance');
     }
+    rjsConfigBase.onModuleBundleComplete = require('../helper/requirejs-patch-helper');
 
     themes.forEach(name => {
         let bundle = require(`${config.tempPath}${config.themes[name].dest.replace('pub/static', '')}/bundle`);
