@@ -11,8 +11,7 @@ function initUrlResolver(rjsConfig, minify) {
         let newContextConstr = requirejs.s.newContext;
 
         function getUrl(context, url) {
-
-            if (context.config.baseUrl === rjsConfig.dir && !url.match(modulesToExclude)) {
+            if (!url.match(modulesToExclude)) {
                 url = minify ? url.replace(/(\.min)?\.js$/, '.min.js') : url;
             }
             return url;
