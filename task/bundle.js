@@ -10,9 +10,9 @@ module.exports = function (done) {
         rjsConfigBase = require('../helper/config-loader')('build.json', plugins, config),
         deepmerge = require('deepmerge'),
         initUrlResolver = require('../helper/url-resolver').initUrlResolver.bind(this),
-        requirejs = require('requirejs'),
         httpPathRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/gm,
         filesExt = minify ? '.min.js' : '.js';
+    let requirejs = require('requirejs');
 
     let tasks = [];
 
@@ -33,6 +33,8 @@ module.exports = function (done) {
             let projectReqConf = plugins.fs.readFileSync(`${rjsConfigBase.dir}/requirejs-config${filesExt}`, 'utf8');
             let f = new Function('require', projectReqConf);
             let origConfig = requirejs.config;
+            let origRequire = requirejs;
+            requirejs = function(){}; //todo try require-new module
             requirejs.config = function (c) {
                 c.context = contextName;
                 c.deps = null;
@@ -40,12 +42,14 @@ module.exports = function (done) {
             }
             f(requirejs);
 
+            requirejs = origRequire;
+            requirejs.config = origConfig;
+
             bundle.map = Object.assign({}, requirejs.s.contexts[contextName].config.map);
             bundle.shim = Object.assign({}, requirejs.s.contexts[contextName].config.shim);
             bundle.paths = Object.assign({}, requirejs.s.contexts[contextName].config.paths);
             let s = JSON.stringify(bundle).replace(httpPathRegex, "empty:");
             bundle = JSON.parse(s);
-            requirejs.config = origConfig;
             /*---------------- local require config end -----------------------*/
 
             tasks.push(new Promise(resolve => {
