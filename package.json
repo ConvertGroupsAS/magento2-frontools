@@ -70,6 +70,8 @@
     "styles": "gulp styles",
     "svg": "gulp svg",
     "watch": "gulp watch",
+    "bower": "gulp bower",
+    "copyjs": "gulp copyjs",
     "test": "eslint *.js helpers/*.js tasks/*.js"
   },
   "engines": {
