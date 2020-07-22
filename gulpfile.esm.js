@@ -13,6 +13,8 @@ import { setup as setupTask } from './tasks/setup'
 import { styles as stylesTask } from './tasks/styles'
 import { svg as svgTask } from './tasks/svg'
 import { watch as watchTask } from './tasks/watch'
+import { bower as bowerTask } from './tasks/bower'
+import { copyjs as copyjsTask } from './tasks/copyjs'
 
 export const babel = series(inheritanceTask, babelTask)
 export const clean = cleanTask
@@ -25,5 +27,7 @@ export const setup = setupTask
 export const styles = series(inheritanceTask, stylesTask)
 export const svg = series(inheritanceTask, svgTask)
 export const watch = watchTask
+export const bower = series(inheritanceTask, bowerTask)
+export const copyjs = copyjsTask
 
 export { default as default } from './tasks/default'

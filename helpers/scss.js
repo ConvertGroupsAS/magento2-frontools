@@ -20,9 +20,10 @@ import { env, themes, tempPath, projectPath, browserSyncInstances } from '../hel
 export default function(name, file) {
   const theme = themes[name]
   const srcBase = path.join(tempPath, theme.dest)
+  const includePaths  = []
   const stylesDir = theme.stylesDir ? theme.stylesDir : 'styles'
   const dest = []
-  const disableMaps = env.disableMaps || false
+  const disableMaps = theme.disableMaps || false
   const production = env.prod || false
   const postcssConfig = []
   const disableSuffix = theme.disableSuffix || false
@@ -36,6 +37,10 @@ export default function(name, file) {
   else {
     postcssConfig.push(autoprefixer({ overrideBrowserslist: browserslist }))
   }
+
+  theme.includePaths.forEach(path => {
+    includePaths.push(projectPath + theme.src + '/' + path);
+  });
 
   function adjustDestinationDirectory(file) {
     if (file.dirname.startsWith(stylesDir)) {
@@ -64,7 +69,9 @@ export default function(name, file) {
       )
     )
     .pipe(gulpIf(!disableMaps, sourcemaps.init()))
-    .pipe(sass().on('error', sassError(env.ci || false)))
+    .pipe(sass({
+      includePaths: includePaths
+    }).on('error', sassError(env.ci || false)))
     .pipe(gulpIf(production, postcss([cssnano()])))
     .pipe(gulpIf(postcssConfig.length, postcss(postcssConfig || [])))
     .pipe(gulpIf(production && !disableSuffix, rename({ suffix: '.min' })))
