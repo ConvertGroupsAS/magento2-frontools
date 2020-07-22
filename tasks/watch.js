@@ -29,6 +29,7 @@ export const watch = () => {
     const themeTempSrc = path.join(tempPath, theme.dest)
     const themeDest = path.join(projectPath, theme.dest)
     const themeSrc = [path.join(projectPath, theme.src)]
+    const disableSassLinting = theme.disableSassLinting || false;
 
     // Add modules source directeoried to theme source paths array
     if (theme.modules) {
@@ -138,7 +139,7 @@ export const watch = () => {
       )
 
       // SASS Lint
-      if (!env.disableLinting) {
+      if (!env.disableLinting && !disableSassLinting) {
         if (path.extname(filePath) === '.scss') {
           sassLint(name, filePath)
         }
@@ -178,7 +179,7 @@ export const watch = () => {
 
     destWatcher.on('change', filePath => {
       // CSS Lint
-      if (!env.disableLinting) {
+      if (!env.disableLinting && !disableSassLinting) {
         if (path.extname(filePath) === '.css') {
           cssLint(name, filePath)
         }
