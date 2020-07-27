@@ -21,22 +21,25 @@ export const bundle = (done) => {
 
     optimizerConfigBase.onModuleBundleComplete = onModuleBundleComplete;
 
-    themesToBundle.forEach(name => {
+    themesToBundle.forEach(theme => {
 
-        themes[name].locale.forEach(locale => {
-            const contextName = `${name}_${locale}`;
-            const themePath = path.join(projectPath, themes[name].dest, locale);
+        themes[theme].locale.forEach(locale => {
+            const contextName = `${theme}_${locale}`;
+            const themePath = path.join(projectPath, themes[theme].dest, locale);
             const themePathTemp = `${themePath}_tmp`;
 
             const bundle = {
-                ...require(path.join(tempPath, themes[name].dest, 'bundle')),
+                ...JSON.parse(fs.readFileSync(path.join(tempPath, themes[theme].dest, 'bundle.json'), 'utf8')),
                 ...getThemeRequirejsConfig(themePath, contextName)
             }
 
             tasks.push(new Promise(resolve => {
+
                 const optimizerConfig = deepmerge.all([{}, bundle, optimizerConfigBase, {
                     dir: themePath,
                     baseUrl: themePathTemp,
+                    theme,
+                    locale,
                 }]);
 
                 optimizerConfig.modules = getExistingModules(bundle, themePath, contextName);

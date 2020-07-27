@@ -3,15 +3,15 @@ import deepmerge from 'deepmerge'
 import fs from 'fs-extra'
 import path from 'path'
 
-import {env, tempPath, themes} from './config';
-import loadConfig from './config-loader';
+import {env} from './config'
+import loadConfig from './config-loader'
 
-const optimizerConfigBase = loadConfig('build.json');
+const optimizerConfigBase = loadConfig('build.json')
 const filesExt = env.minify ? '.min.js' : '.js'
 
-export default function getExistingModules(bundle, themePath, contextName) {
+export default function getExistingModules(config, themePath, contextName) {
 
-    const bundles = [...bundle.modules];
+    const bundles = [...config.modules];
 
     const localRequire = requirejs.config(deepmerge.all([{}, optimizerConfigBase, {
         baseUrl: themePath,
@@ -19,10 +19,10 @@ export default function getExistingModules(bundle, themePath, contextName) {
         modules: bundles
     }]));
 
-    bundles.forEach((module, i, list) => {
+    bundles.forEach((bundle, i, list) => {
         const notFoundModules = [];
 
-        module.include.forEach(moduleName => {
+        bundle.include.forEach(moduleName => {
 
             let prefix;
             let moduleId = moduleName;
@@ -47,7 +47,7 @@ export default function getExistingModules(bundle, themePath, contextName) {
             }
         });
 
-        list[i].include = module.include.filter(module => !notFoundModules.includes(module));
+        list[i].include = bundle.include.filter(module => !notFoundModules.includes(module));
     });
 
     return bundles;

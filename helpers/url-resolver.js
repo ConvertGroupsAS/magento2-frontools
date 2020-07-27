@@ -3,7 +3,7 @@ import requirejs from 'requirejs'
 import matchAll from 'match-all'
 import path from 'path'
 
-import {env, tempPath, themes} from './config'
+import {env} from './config'
 
 const filesExt = env.minify ? '.min.js' : '.js'
 
