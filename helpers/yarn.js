@@ -17,7 +17,10 @@ export default (name) => {
     fs.accessSync(themePath + '/package.json', fs.constants.F_OK);
     fs.accessSync(themePath + '/yarn.lock', fs.constants.F_OK);
 
-    const gulpTask = src([themePath + '/package.json', themePath + '/yarn.lock'])
+    const gulpTask = src([
+      themePath + '/package.json',
+      themePath + '/yarn.lock'
+    ])
       .pipe(yarn());
 
     return gulpTask;
