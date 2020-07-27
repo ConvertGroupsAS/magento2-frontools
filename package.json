@@ -42,6 +42,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-svg-sprite": "^1.5.0",
     "gulp-uglify": "^3.0.2",
+    "gulp-yarn": "^2.0.0",
     "js-yaml": "^3.13.1",
     "marked": "^0.8.0",
     "marked-terminal": "^3.3.0",
@@ -71,6 +72,7 @@
     "svg": "gulp svg",
     "watch": "gulp watch",
     "bower": "gulp bower",
+    "yarn": "gulp yarn",
     "copyjs": "gulp copyjs",
     "test": "eslint *.js helpers/*.js tasks/*.js"
   },
