@@ -19,8 +19,10 @@
     "browser-sync": "^2.26.7",
     "chokidar": "^3.3.1",
     "cssnano": "^4.1.10",
+    "deepmerge": "^4.2.2",
     "esm": "^3.2.25",
     "fancy-log": "^1.3.3",
+    "filesize": "^6.1.0",
     "fs-extra": "^8.1.0",
     "globby": "^10.0.2",
     "gulp": "^4.0.2",
@@ -46,9 +48,11 @@
     "js-yaml": "^3.13.1",
     "marked": "^0.8.0",
     "marked-terminal": "^3.3.0",
+    "match-all": "^1.2.5",
     "merge-stream": "^2.0.0",
     "minimist": "^1.2.0",
     "postcss-reporter": "^6.0.1",
+    "requirejs": "^2.3.6",
     "run-sequence": "^2.2.1",
     "stylelint": "^11.1.1",
     "stylelint-config-standard": "^19.0.0"
@@ -74,6 +78,7 @@
     "bower": "gulp bower",
     "yarn": "gulp yarn",
     "copyjs": "gulp copyjs",
+    "bundle": "gulp bundle",
     "test": "eslint *.js helpers/*.js tasks/*.js"
   },
   "engines": {

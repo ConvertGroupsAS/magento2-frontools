@@ -16,6 +16,7 @@ import { watch as watchTask } from './tasks/watch'
 import { bower as bowerTask } from './tasks/bower'
 import { yarn as yarnTask } from './tasks/yarn'
 import { copyjs as copyjsTask } from './tasks/copyjs'
+import { bundle as bundleTask } from './tasks/bundle'
 
 export const babel = series(inheritanceTask, babelTask)
 export const clean = cleanTask
@@ -31,5 +32,6 @@ export const watch = watchTask
 export const bower = series(inheritanceTask, bowerTask)
 export const yarn = series(inheritanceTask, yarnTask)
 export const copyjs = copyjsTask
+export const bundle = series(inheritanceTask, bundleTask)
 
 export { default as default } from './tasks/default'
