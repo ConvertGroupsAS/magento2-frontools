@@ -10,7 +10,7 @@ module.exports = function (done) {
         rjsConfigBase = require('../helper/config-loader')('build.json', plugins, config),
         deepmerge = require('deepmerge'),
         initUrlResolver = require('../helper/url-resolver').initUrlResolver.bind(this),
-        httpPathRegex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/gm,
+        absoluteOrRelativeUrlRegex = /((http|ftp|https):)?\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?/gm,
         filesExt = minify ? '.min.js' : '.js';
     let requirejs = require('requirejs');
 
@@ -48,7 +48,7 @@ module.exports = function (done) {
             bundle.map = Object.assign({}, requirejs.s.contexts[contextName].config.map);
             bundle.shim = Object.assign({}, requirejs.s.contexts[contextName].config.shim);
             bundle.paths = Object.assign({}, requirejs.s.contexts[contextName].config.paths);
-            let s = JSON.stringify(bundle).replace(httpPathRegex, "empty:");
+            let s = JSON.stringify(bundle).replace(absoluteOrRelativeUrlRegex, "empty:");
             bundle = JSON.parse(s);
             /*---------------- local require config end -----------------------*/
 
